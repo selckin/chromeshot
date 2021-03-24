@@ -1,10 +1,7 @@
 package be.selckin.chromeshot;
 
-import be.selckin.chromeshot.ScreenShotter.ScreenMode;
-import be.selckin.chromeshot.ScreenShotter.ScreenshotHandler;
 import com.beust.jcommander.JCommander;
 import com.github.kklisura.cdt.services.ChromeService;
-import com.github.kklisura.cdt.services.exceptions.ChromeDevToolsInvocationException;
 import com.github.kklisura.cdt.services.exceptions.ChromeServiceException;
 import com.github.kklisura.cdt.services.factory.impl.DefaultWebSocketContainerFactory;
 import com.github.kklisura.cdt.services.impl.ChromeServiceImpl;
@@ -14,11 +11,9 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -73,21 +68,8 @@ public class Main {
 
                 List<NamedNode> nodes = findNodes(screenShotter, args);
 
-                screenShotter.screenshot(nodes, new ScreenshotHandler() {
-                    @Override
-                    public void onScreenShot(NamedNode node, byte[] image) {
-                        try {
-                            store.write(image, node.getName() + ".png");
-                        } catch (IOException ex) {
-                            log.warn("Failed to write to {}", node, ex);
-                        }
-                    }
-
-                    @Override
-                    public void onError(NamedNode node, ChromeDevToolsInvocationException ex) {
-                        log.info("Failed to capture screenshot of node {}", node, ex);
-                    }
-                });
+                ScreenshotHandler screenshotHandler = new StoringScreenshotHandler(store);
+                screenShotter.screenshot(nodes, screenshotHandler);
             }
         }
     }
@@ -170,21 +152,4 @@ public class Main {
         return chromeService.getTabs().stream().filter(filter).collect(Collectors.toList());
     }
 
-    public static class NamedNode {
-        private final Integer nodeId;
-        private final String name;
-
-        public NamedNode(Integer nodeId, String name) {
-            this.nodeId = Objects.requireNonNull(nodeId);
-            this.name = Objects.requireNonNull(name);
-        }
-
-        public Integer getNodeId() {
-            return nodeId;
-        }
-
-        public String getName() {
-            return name;
-        }
-    }
 }

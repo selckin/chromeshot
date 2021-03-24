@@ -1,7 +1,5 @@
 package be.selckin.chromeshot;
 
-
-import be.selckin.chromeshot.Main.NamedNode;
 import com.github.kklisura.cdt.protocol.commands.DOM;
 import com.github.kklisura.cdt.protocol.commands.Emulation;
 import com.github.kklisura.cdt.protocol.commands.Page;
@@ -80,11 +78,11 @@ public class ScreenShotter implements AutoCloseable {
 
         for (int i = 0; i < nodes.size(); i++) {
             NamedNode node = nodes.get(i);
-            log.info("Taking screenshot {}/{} -- {}", i + 1, nodes.size(), node.getName());
+            log.info("Taking screenshot {}/{} -- {}", i + 1, nodes.size(), node.name());
 
-            dom.scrollIntoViewIfNeeded(node.getNodeId(), null, null, null);
+            dom.scrollIntoViewIfNeeded(node.nodeId(), null, null, null);
 
-            Viewport viewPort = findViewPort(dom, node.getNodeId());
+            Viewport viewPort = findViewPort(dom, node.nodeId());
             if (mode == ScreenMode.SCROLL) {
                 int scrollX = evaluateInt("window.scrollX");
                 int scrollY = evaluateInt("window.scrollY");
@@ -115,17 +113,6 @@ public class ScreenShotter implements AutoCloseable {
     public void close() {
         devToolsService.close();
     }
-
-    public enum ScreenMode {
-        SCROLL /* Faster but sometimes parts don't seem to have rendered */,
-        DEVICE_OVERRIDE
-    }
-
-    public interface ScreenshotHandler {
-        void onScreenShot(NamedNode nodeId, byte[] image);
-        void onError(NamedNode nodeId, ChromeDevToolsInvocationException ex);
-    }
-
 
     private static Viewport findViewPort(DOM dom, Integer integer) {
         BoxModel boxModel = dom.getBoxModel(integer, null, null);
