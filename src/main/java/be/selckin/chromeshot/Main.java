@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -69,6 +70,10 @@ public class Main {
                 List<NamedNode> nodes = findNodes(screenShotter, args);
 
                 ScreenshotHandler screenshotHandler = new StoringScreenshotHandler(store);
+                Color transparentColor = args.transparentColor();
+                if (transparentColor != null) {
+                    screenshotHandler = new TransparencyScreenshotHandlerDecorator(screenshotHandler, transparentColor);
+                }
                 screenShotter.screenshot(nodes, screenshotHandler);
             }
         }

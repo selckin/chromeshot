@@ -2,6 +2,7 @@ package be.selckin.chromeshot;
 
 import com.beust.jcommander.Parameter;
 
+import java.awt.Color;
 import java.nio.file.Path;
 
 public class Args {
@@ -32,6 +33,10 @@ public class Args {
     @Parameter(names = {"--file-selector"}, description = "The selector to find the child of --grab-selector that has the --file-attribute attribute")
     private String fileNameSelector;
 
+
+    @Parameter(names = {"--transparent-color"}, description = "The color that should be turned to transparency in the resulting PNG as comma-separated RGB, e.g. \"1,2,3\"")
+    private String transparentColor;
+
     public Integer getPort() {
         return port;
     }
@@ -59,4 +64,15 @@ public class Args {
     public String getFileNameSelector() {
         return fileNameSelector;
     }
+
+    /**
+     * @throws RuntimeException if the specified string can't be turned onto a {@link Color}
+     */
+    public Color transparentColor() throws RuntimeException {
+        if (transparentColor == null || transparentColor.isBlank())
+            return null;
+        String[] rgb = transparentColor.split(",");
+        return new Color(Integer.parseInt(rgb[0]), Integer.parseInt(rgb[1]), Integer.parseInt(rgb[2]));
+    }
+
 }
