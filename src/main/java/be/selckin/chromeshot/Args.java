@@ -5,6 +5,7 @@ import com.beust.jcommander.Parameter;
 import java.awt.Color;
 import java.nio.file.Path;
 
+@SuppressWarnings("FieldMayBeFinal")
 public class Args {
 
     @Parameter(names = {"-p", "--port"}, description = "Port remote chrome debugger is listening on")
@@ -39,6 +40,9 @@ public class Args {
 
     @Parameter(names = {"--rounding"}, description = "The rounding mode for viewport coordinates and width/height (which aren't necessarily integers).")
     private ViewportRounding viewportRounding = ViewportRounding.OUTER;
+
+    @Parameter(names = {"--box"}, description = "The box model to capture")
+    private ViewBox viewBox = ViewBox.BORDER;
 
     public Integer getPort() {
         return port;
@@ -82,4 +86,7 @@ public class Args {
         return viewportRounding;
     }
 
+    public ViewBox getViewBox() {
+        return viewBox;
+    }
 }

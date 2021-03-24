@@ -68,6 +68,7 @@ public class Main {
             try (ScreenShotter screenShotter = new ScreenShotter(
                     ScreenMode.DEVICE_OVERRIDE,
                     args.getViewportRounding(),
+                    args.getViewBox(),
                     chromeService.createDevToolsService(tab))) {
 
                 List<NamedNode> nodes = findNodes(screenShotter, args);

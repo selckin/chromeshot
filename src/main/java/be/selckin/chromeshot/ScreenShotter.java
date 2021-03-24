@@ -24,6 +24,7 @@ public class ScreenShotter implements AutoCloseable {
 
     private final ScreenMode mode;
     private final ViewportRounding rounding;
+    private final ViewBox viewBox;
     private final ChromeDevToolsService devToolsService;
     private final Page page;
     private final DOM dom;
@@ -31,9 +32,10 @@ public class ScreenShotter implements AutoCloseable {
     private final Runtime runtime;
 
 
-    public ScreenShotter(ScreenMode mode, ViewportRounding rounding, ChromeDevToolsService devToolsService) {
+    public ScreenShotter(ScreenMode mode, ViewportRounding rounding, ViewBox viewBox, ChromeDevToolsService devToolsService) {
         this.mode = Objects.requireNonNull(mode);
         this.rounding = Objects.requireNonNull(rounding);
+        this.viewBox = Objects.requireNonNull(viewBox);
         this.devToolsService = Objects.requireNonNull(devToolsService);
         this.page = devToolsService.getPage();
         this.dom = devToolsService.getDOM();
@@ -115,10 +117,14 @@ public class ScreenShotter implements AutoCloseable {
         devToolsService.close();
     }
 
-    private static Viewport findViewPort(DOM dom, Integer integer) {
+    private Viewport findViewPort(DOM dom, Integer integer) {
         BoxModel boxModel = dom.getBoxModel(integer, null, null);
-
-        return toViewPort(boxModel.getBorder());
+        return switch (viewBox) {
+            case CONTENT -> toViewPort(boxModel.getContent());
+            case PADDING -> toViewPort(boxModel.getPadding());
+            case BORDER -> toViewPort(boxModel.getBorder());
+            case MARGIN -> toViewPort(boxModel.getMargin());
+        };
     }
 
     // https://chromedevtools.github.io/devtools-protocol/tot/DOM/#type-Quad
