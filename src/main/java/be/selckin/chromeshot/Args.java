@@ -37,6 +37,9 @@ public class Args {
     @Parameter(names = {"--transparent-color"}, description = "The color that should be turned to transparency in the resulting PNG as comma-separated RGB, e.g. \"1,2,3\"")
     private String transparentColor;
 
+    @Parameter(names = {"--rounding"}, description = "The rounding mode for viewport coordinates and width/height (which aren't necessarily integers).")
+    private ViewportRounding viewportRounding = ViewportRounding.OUTER;
+
     public Integer getPort() {
         return port;
     }
@@ -73,6 +76,10 @@ public class Args {
             return null;
         String[] rgb = transparentColor.split(",");
         return new Color(Integer.parseInt(rgb[0]), Integer.parseInt(rgb[1]), Integer.parseInt(rgb[2]));
+    }
+
+    public ViewportRounding getViewportRounding() {
+        return viewportRounding;
     }
 
 }

@@ -65,7 +65,10 @@ public class Main {
         List<ChromeTab> tabs = getTabs(chromeService, toTabFilter(args));
         for (ChromeTab tab : tabs) {
 
-            try (ScreenShotter screenShotter = new ScreenShotter(ScreenMode.DEVICE_OVERRIDE, chromeService.createDevToolsService(tab))) {
+            try (ScreenShotter screenShotter = new ScreenShotter(
+                    ScreenMode.DEVICE_OVERRIDE,
+                    args.getViewportRounding(),
+                    chromeService.createDevToolsService(tab))) {
 
                 List<NamedNode> nodes = findNodes(screenShotter, args);
 

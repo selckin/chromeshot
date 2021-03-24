@@ -21,9 +21,9 @@ import java.util.function.DoubleBinaryOperator;
 
 public class ScreenShotter implements AutoCloseable {
     protected static final Logger log = LoggerFactory.getLogger("main");
-    protected static final double EPSILON = 1.0E-3;
 
     private final ScreenMode mode;
+    private final ViewportRounding rounding;
     private final ChromeDevToolsService devToolsService;
     private final Page page;
     private final DOM dom;
@@ -31,8 +31,9 @@ public class ScreenShotter implements AutoCloseable {
     private final Runtime runtime;
 
 
-    public ScreenShotter(ScreenMode mode, ChromeDevToolsService devToolsService) {
+    public ScreenShotter(ScreenMode mode, ViewportRounding rounding, ChromeDevToolsService devToolsService) {
         this.mode = Objects.requireNonNull(mode);
+        this.rounding = Objects.requireNonNull(rounding);
         this.devToolsService = Objects.requireNonNull(devToolsService);
         this.page = devToolsService.getPage();
         this.dom = devToolsService.getDOM();
@@ -89,7 +90,7 @@ public class ScreenShotter implements AutoCloseable {
                 viewPort.setX(viewPort.getX() + scrollX);
                 viewPort.setY(viewPort.getY() + scrollY);
             }
-            viewPort = toIntViewPort(viewPort); // Round off
+            viewPort = rounding.round(viewPort);
 
             try {
                 String encodedImage = page.captureScreenshot(CaptureScreenshotFormat.PNG, 100, viewPort, true);
@@ -133,23 +134,6 @@ public class ScreenShotter implements AutoCloseable {
         clip.setY(y);
         clip.setWidth(width);
         clip.setHeight(height);
-
-        clip.setScale(1.0d);
-
-        return clip;
-    }
-
-    private static Viewport toIntViewPort(Viewport viewport) {
-        Viewport clip = new Viewport();
-        double x = Math.floor(viewport.getX() + EPSILON);
-        double y = Math.floor(viewport.getY() + EPSILON);
-        double x2 = Math.ceil(viewport.getX() + viewport.getWidth() - EPSILON);
-        double y2 = Math.ceil(viewport.getY() + viewport.getHeight() - EPSILON);
-
-        clip.setX(x);
-        clip.setY(y);
-        clip.setWidth(x2 - x);
-        clip.setHeight(y2 - y);
 
         clip.setScale(1.0d);
 
