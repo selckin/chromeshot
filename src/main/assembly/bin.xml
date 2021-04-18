@@ -6,6 +6,7 @@
     <formats>
         <format>zip</format>
     </formats>
+    <baseDirectory>chromeshot</baseDirectory>
     <fileSets>
         <fileSet>
             <directory>target/appassembler/repo</directory>
