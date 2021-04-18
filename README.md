@@ -1,5 +1,7 @@
 # chromeshot
 
+[![Main build](https://github.com/selckin/chromeshot/actions/workflows/build.yml/badge.svg)](https://github.com/selckin/chromeshot/actions/workflows/build.yml)
+
 1) Run google chrome with remote debugging enabled
 
     ```bash
