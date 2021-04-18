@@ -23,16 +23,19 @@ jobs:
         with:
           java-version: 16
 
-      - name: Build with Maven
-        run: mvn -B -ntp clean deploy
+      - name: Build
+        run: mvn -B -ntp clean package
+
+      - name: Deploy
+        run: mvn -B -ntp -s .github/settings.xml deploy
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: target/chromeshot-*-simple.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
   done:
