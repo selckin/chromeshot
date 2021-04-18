@@ -24,7 +24,7 @@ jobs:
           java-version: 16
 
       - name: Build with Maven
-        run: mvn -B clean package
+        run: mvn -B -ntp clean deploy
 
       - name: Release
         uses: softprops/action-gh-release@v1
