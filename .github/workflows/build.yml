@@ -7,29 +7,38 @@ on:
       - 'v**'
   pull_request:
     branches: '*'
+  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 15
-    strategy:
-      matrix:
-        java: [ 16 ]
-        os: [ ubuntu, macos ]
-    name: with Java ${{ matrix.java }} on ${{ matrix.os }}
+    name: build
     steps:
       - name: Check out repo
         uses: actions/checkout@v2
+
       - name: Set up java
         uses: actions/setup-java@v1
         with:
-          java-version: ${{ matrix.java }}
+          java-version: 16
+
       - name: Build with Maven
-        run: mvn -B clean package --file pom.xml
-  buildDone:
-    name: buildOk
+        run: mvn -B clean package
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: target/chromeshot-1.0-SNAPSHOT.jar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
+  done:
+    name: done
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: buildOk
+      - name: done
         run: echo 'all builds passed'
