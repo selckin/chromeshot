@@ -2,11 +2,7 @@ name: Main build
 
 on:
   push:
-    branches: 'main'
-    tags-ignore:
-      - 'v**'
-  pull_request:
-    branches: '*'
+    branches: [ 'main' ]
   workflow_dispatch:
 
 jobs:
