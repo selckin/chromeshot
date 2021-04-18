@@ -39,14 +39,17 @@ public class Main {
         JCommander commander = JCommander.newBuilder()
                 .addObject(args)
                 .build();
+        if (argv.length == 0) {
+            commander.usage();
+            return;
+        }
+
         commander.parse(argv);
 
         if (args.isHelp()) {
             commander.usage();
             return;
         }
-
-
 
         try {
             main(args);
