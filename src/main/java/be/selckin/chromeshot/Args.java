@@ -8,6 +8,9 @@ import java.nio.file.Path;
 @SuppressWarnings("FieldMayBeFinal")
 public class Args {
 
+    @Parameter(names = {"--help"}, description = "Print usage", help = true)
+    private boolean help = false;
+
     @Parameter(names = {"-p", "--port"}, description = "Port remote chrome debugger is listening on")
     private Integer port = 9222;
 
@@ -43,6 +46,10 @@ public class Args {
 
     @Parameter(names = {"--box"}, description = "The box model to capture")
     private ViewBox viewBox = ViewBox.BORDER;
+
+    public boolean isHelp() {
+        return help;
+    }
 
     public Integer getPort() {
         return port;

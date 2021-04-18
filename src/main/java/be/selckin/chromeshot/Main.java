@@ -36,10 +36,17 @@ public class Main {
     public static void main(String[] argv) {
         Args args = new Args();
 
-        JCommander.newBuilder()
+        JCommander commander = JCommander.newBuilder()
                 .addObject(args)
-                .build()
-                .parse(argv);
+                .build();
+        commander.parse(argv);
+
+        if (args.isHelp()) {
+            commander.usage();
+            return;
+        }
+
+
 
         try {
             main(args);
